@@ -1,0 +1,55 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: etcd-backup
+  namespace: etcd-backup
+  labels:
+    app: etcd-backup
+spec:
+  schedule: "0 0 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app: etcd-backup
+        spec:
+          serviceAccountName: etcd-backup
+          restartPolicy: Never
+
+          # NEW: use host network so localhost:6443 hits the node’s API
+          hostNetwork: true
+          dnsPolicy: ClusterFirstWithHostNet
+
+          nodeSelector:
+            node-role.kubernetes.io/master: ""   # you can keep this; the warning is cosmetic
+          tolerations:
+            - key: "node-role.kubernetes.io/master"
+              operator: "Exists"
+              effect: "NoSchedule"
+
+          containers:
+            - name: backup-etcd-s3
+              image: quay.io/sohidur1/etcd-backup-s3:1.0.2
+              imagePullPolicy: IfNotPresent
+              securityContext:
+                privileged: true
+                runAsUser: 0
+              envFrom:
+                - configMapRef:
+                    name: etcd-backup-config
+                - secretRef:
+                    name: etcd-backup-s3
+              volumeMounts:
+                - name: host-root
+                  mountPath: /host
+
+          volumes:
+            - name: host-root
+              hostPath:
+                path: /
+                type: Directory

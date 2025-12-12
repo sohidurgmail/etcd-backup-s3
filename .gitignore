@@ -1,0 +1,7 @@
+# Local S3 credentials for Kustomize
+s3-credentials.env
+
+# Common temporary / editor files
+*.swp
+*.swo
+.DS_Store

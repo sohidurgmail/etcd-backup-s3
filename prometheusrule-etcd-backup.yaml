@@ -1,0 +1,21 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: etcd-backup-cronjob-monitor
+  namespace: etcd-backup
+  labels:
+    app: etcd-backup
+spec:
+  groups:
+    - name: etcd-backup
+      rules:
+        - alert: EtcdBackupJobFailed
+          expr: kube_job_status_failed{namespace="etcd-backup", job_name=~"etcd-backup.*"} > 0
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Etcd backup job failed in namespace etcd-backup"
+            description: >
+              One or more etcd-backup Jobs in the etcd-backup namespace have failed.
+              Check the job logs and S3 connectivity.

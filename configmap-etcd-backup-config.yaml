@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: etcd-backup-config
+  namespace: etcd-backup
+data:
+  # S3 endpoint reachable from the cluster
+  # Example: "https://s3.internal.example.com"
+  S3_ENDPOINT: "https://s3.internal.example.com"
+
+  # Bucket name for etcd backups
+  S3_BUCKET: "my-etcd-backup-test-bucket"
+
+  # Cluster-specific prefix (so multiple clusters can share bucket)
+  S3_PREFIX: "rhacm-hub-cluster-01"
+
+  # Host directory where cluster-backup.sh writes backups
+  HOST_BACKUP_DIR: "/home/core/etcd_backups"
+
+  # "true" to allow insecure S3 (self-signed cert) using mc --insecure
+  S3_INSECURE: "false"
