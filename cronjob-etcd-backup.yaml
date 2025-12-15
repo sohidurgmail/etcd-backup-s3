@@ -47,9 +47,15 @@ spec:
               volumeMounts:
                 - name: host-root
                   mountPath: /host
-
+                - name: s3-ca
+                  mountPath: /etc/pki/ca-trust/source/anchors/s3-ca.crt
+                  subPath: ca.crt
+                  readOnly: true
           volumes:
             - name: host-root
               hostPath:
                 path: /
                 type: Directory
+            - name: s3-ca
+              configMap:
+                name: etcd-backup-s3-ca
