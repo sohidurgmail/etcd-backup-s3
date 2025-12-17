@@ -36,3 +36,9 @@ Suggested structure (adjust if your repo differs):
 ├── cronjob-etcd-backup.yaml
 ├── prometheusrule-etcd-backup.yaml      # optional alerting
 └── README.md
+
+## Acknowledgements
+
+This project was inspired by the [adfinis/openshift-etcd-backup] and
+[kubernetes-etcd-backup] projects, as well as the official Red Hat
+OpenShift etcd backup documentation.
